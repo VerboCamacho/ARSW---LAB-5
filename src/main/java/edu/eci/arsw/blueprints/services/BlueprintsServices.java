@@ -48,7 +48,6 @@ public class BlueprintsServices {
         InMemoryBlueprintPersistence mb = new InMemoryBlueprintPersistence();
         return mb.getBlueprint(author,name);
     }
-    
     /**
      * 
      * @param author blueprint's author
@@ -56,7 +55,11 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
-        return bpp.getBlueprintsByAuthor(author);
+        Set<Blueprint> blueByAuthor=new HashSet<>();
+        blueByAuthor= bpp.getBluePrintsByAuthor(author);
+
+        return blueByAuthor;
+
     }
     
 }

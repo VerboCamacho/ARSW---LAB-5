@@ -33,10 +33,9 @@ public interface BlueprintsPersistence {
      */
     public Blueprint getBlueprint(String author,String bprintname) throws BlueprintNotFoundException;
 
-    //public ArrayList<Blueprint> getBluePrintsByAuthor(String author) throws BlueprintNotFoundException;
-    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException;
+    public Set<Blueprint> getBluePrintsByAuthor(String author) throws BlueprintNotFoundException;
+
     public Set<Blueprint> getAllBlueprints() throws BlueprintNotFoundException;
 
-
-
+    public boolean putBlueprint(String author, String name, Blueprint bp) throws BlueprintPersistenceException;
 }

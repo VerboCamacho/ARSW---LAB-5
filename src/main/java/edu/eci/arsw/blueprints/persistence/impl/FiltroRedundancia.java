@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class FiltroRedundancia implements Filtro {
     private Point blue;
     private Blueprint bluepri;
-
     public void setBluepri(Blueprint entrada){
         bluepri =entrada;
         filtrar();
