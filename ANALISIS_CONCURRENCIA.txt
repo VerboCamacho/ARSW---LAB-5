@@ -1,0 +1,2 @@
+Para la solución de este problema hemos implementado un ConcurrentHashMap, teniendo en cuenta que las condiciones de carrera eran que al momento de que un usuario y otro simultáneamente intentaran modificar o agregar algun valor de nuestro programa.
+También se tuvo en cuenta los tipos de errores que pueden llegar a generarse con algún método como lo son: GET, PUT o POST,

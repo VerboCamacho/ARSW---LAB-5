@@ -91,10 +91,15 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     @Override
     public Set<Blueprint> getBluePrintsByAuthor(String author) throws BlueprintNotFoundException {
         Set<Blueprint> bluePrints = new HashSet<>();
+
         for(Map.Entry<Tuple<String, String>, Blueprint> key: blueprints.entrySet()){
+
             if(key.getKey().o1.equals(author) ){
                 bluePrints.add(key.getValue());
             }
+        }
+        if (bluePrints.isEmpty()) {
+            throw new BlueprintNotFoundException("No existe ningún plano ");
         }
         return bluePrints;
     }

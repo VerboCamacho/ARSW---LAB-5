@@ -7,6 +7,8 @@ package edu.eci.arsw.blueprints.controllers;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
@@ -33,16 +35,24 @@ public class BlueprintAPIController {
     //GETS
     @GetMapping("/blueprints")
     public ResponseEntity<?> getAllBluePrints() throws BlueprintNotFoundException {
-        return new ResponseEntity<>(nombre.getAllBlueprints(), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(nombre.getAllBlueprints(), HttpStatus.OK);
+        }catch (Exception ex){
+            Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE,null,ex);
+            return new ResponseEntity<>("No hay planos", HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/blueprints/{author}")
     public ResponseEntity<?> getAuthorBlueprints(@PathVariable(value="author") String author)throws ResourceNotFoundException{
 
         try {
+
             return new ResponseEntity<>(nombre.getBluePrintsByAuthor(author), HttpStatus.OK);
         } catch (BlueprintNotFoundException e) {
-            throw new ResourceNotFoundException();
+
+            Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE,null,e);
+            return new ResponseEntity<>("No existe algún plano del autor", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -50,10 +60,10 @@ public class BlueprintAPIController {
     public ResponseEntity<?> getBlueprint(@PathVariable(value="author") String author,@PathVariable(value="name") String name)throws ResourceNotFoundException{
 
         try {
-            //System.out.println(nombre.getBlueprint(author, name));
             return new ResponseEntity<>(nombre.getBlueprint(author, name), HttpStatus.OK);
         } catch (BlueprintNotFoundException e) {
-            throw new ResourceNotFoundException();
+            Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE,null,e);
+            return new ResponseEntity<>("No existe el plano", HttpStatus.NOT_FOUND);
 
         }
     }
@@ -61,23 +71,22 @@ public class BlueprintAPIController {
     @PostMapping("/planos")
     public ResponseEntity<?> addBlueprint (@RequestBody Blueprint bp) throws ResourceNotFoundException {
         try{
-            //System.out.println(bp.getAuthor());
-            //System.out.println(bp.getName());
-            //System.out.println(bp.getPoints());
             nombre.saveBlueprint(bp);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>("Se registro el plano exitosamente",HttpStatus.CREATED);
         }
-        catch (BlueprintPersistenceException e) {
-            throw new ResourceNotFoundException();
+        catch (BlueprintPersistenceException ex) {
+            Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE,null,ex);
+            return new ResponseEntity<>("No se ha podido registrar el plano", HttpStatus.FORBIDDEN);
         }
     }
     //PUT
     @PutMapping("/blueprints/{author}/{name}")
     public ResponseEntity<?>  putBlueprint (@PathVariable(value="author") String author,@PathVariable(value="name") String name, @RequestBody Blueprint bp) throws ResourceNotFoundException, BlueprintPersistenceException, BlueprintNotFoundException {
+
         if(nombre.putBlueprint(author, name, bp)){
-            return new ResponseEntity<>(nombre.getBlueprint(author, name),HttpStatus.OK);
+            return new ResponseEntity<>("Se ha actualizado el plano exitosamente",HttpStatus.ACCEPTED);
         }else{
-            throw new ResourceNotFoundException();
+            return new ResponseEntity<>("No se ha podido actualizar el plano",HttpStatus.FORBIDDEN);
         }
     }
 
