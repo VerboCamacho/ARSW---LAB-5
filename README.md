@@ -62,12 +62,19 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 	
 	```
 	Y luego enviando una petición GET a: http://localhost:8080/blueprints. Rectifique que, como respuesta, se obtenga un objeto jSON con una lista que contenga el detalle de los planos suministados por defecto, y que se haya aplicado el filtrado de puntos correspondiente.
-
+   
+![](img/4.jpg)
 
 5. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}, el cual retorne usando una representación jSON todos los planos realizados por el autor cuyo nombre sea {author}. Si no existe dicho autor, se debe responder con el código de error HTTP 404. Para esto, revise en [la documentación de Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html), sección 22.3.2, el uso de @PathVariable. De nuevo, verifique que al hacer una petición GET -por ejemplo- a recurso http://localhost:8080/blueprints/juan, se obtenga en formato jSON el conjunto de planos asociados al autor 'juan' (ajuste esto a los nombres de autor usados en el punto 2).
 
+![](img/5-1.jpg)
+
+![](img/5-2.jpg)
 6. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}/{bpname}, el cual retorne usando una representación jSON sólo UN plano, en este caso el realizado por {author} y cuyo nombre sea {bpname}. De nuevo, si no existe dicho autor, se debe responder con el código de error HTTP 404. 
 
+![](img/6-1.jpg)
+   
+![](img/6-2.jpg)
 
 
 ### Parte II
@@ -89,6 +96,19 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 	```	
 
 
+```java
+@PostMapping("/planos")
+public ResponseEntity<?> addBlueprint (@RequestBody Blueprint bp) throws ResourceNotFoundException {
+		try{
+		nombre.saveBlueprint(bp);
+		return new ResponseEntity<>("Se registro el plano exitosamente",HttpStatus.CREATED);
+		}
+		catch (BlueprintPersistenceException ex) {
+		Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE,null,ex);
+		return new ResponseEntity<>("No se ha podido registrar el plano", HttpStatus.FORBIDDEN);
+		}
+		}
+```
 2.  Para probar que el recurso ‘planos’ acepta e interpreta
     correctamente las peticiones POST, use el comando curl de Unix. Este
     comando tiene como parámetro el tipo de contenido manejado (en este
@@ -107,9 +127,22 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 
 
 3. Teniendo en cuenta el autor y numbre del plano registrado, verifique que el mismo se pueda obtener mediante una petición GET al recurso '/blueprints/{author}/{bpname}' correspondiente.
+   
+![](img/6-1.jpg)
 
+![](img/6-2.jpg)
 4. Agregue soporte al verbo PUT para los recursos de la forma '/blueprints/{author}/{bpname}', de manera que sea posible actualizar un plano determinado.
+```java
+    @PutMapping("/blueprints/{author}/{name}")
+    public ResponseEntity<?>  putBlueprint (@PathVariable(value="author") String author,@PathVariable(value="name") String name, @RequestBody Blueprint bp) throws ResourceNotFoundException, BlueprintPersistenceException, BlueprintNotFoundException {
 
+        if(nombre.putBlueprint(author, name, bp)){
+            return new ResponseEntity<>("Se ha actualizado el plano exitosamente",HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>("No se ha podido actualizar el plano",HttpStatus.FORBIDDEN);
+        }
+    }
+```
 
 ### Parte III
 
@@ -122,4 +155,6 @@ Ajuste el código para suprimir las condiciones de carrera. Tengan en cuenta que
 
 Escriba su análisis y la solución aplicada en el archivo ANALISIS_CONCURRENCIA.txt
 
+![](img/3-1.jpg)
 
+[ANALISIS_CONCURRENCIA.txt](ANALISIS_CONCURRENCIA.txt).

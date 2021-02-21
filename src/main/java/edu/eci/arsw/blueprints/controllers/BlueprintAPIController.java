@@ -79,6 +79,7 @@ public class BlueprintAPIController {
             return new ResponseEntity<>("No se ha podido registrar el plano", HttpStatus.FORBIDDEN);
         }
     }
+
     //PUT
     @PutMapping("/blueprints/{author}/{name}")
     public ResponseEntity<?>  putBlueprint (@PathVariable(value="author") String author,@PathVariable(value="name") String name, @RequestBody Blueprint bp) throws ResourceNotFoundException, BlueprintPersistenceException, BlueprintNotFoundException {
